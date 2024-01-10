@@ -14,6 +14,15 @@ const errorSchema = new mongoose.Schema({
     errorlog : String, 
     count : Number
 })
+const taskSchema =  new mongoose.Schema({
+    title : String,
+    description : String,
+    completed :boolean,
+    user : [ {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "User"
+    }]
+})
 //creating model
 const usermodel = mongoose.model("User",Userschema);
 
