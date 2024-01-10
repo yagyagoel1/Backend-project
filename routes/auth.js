@@ -36,17 +36,54 @@ app.post("/userRegistration",async(req,res,next)=>{
                 
             }
         });
-        const jwttoken = jwt.sign({
-            username,email
-        },jwtsecretkey);
+        
+
         res.status(200).json({
             msg : " user created successfully",
-            token : jwttoken
+            
         });
     }
 
 })
-
+app.post("/userlogin",async(req,res,next)=>{
+bycrypt.hash(req.body.password,10,async(err,hashedpass)=>{
+    if(!err)
+    {
+        const check = await usermodel.findOne({
+            username : req.body.username,
+            password : hashedpass
+        });
+        if(check)
+        {
+           const token= await jwt.sign({username,email},jwtsecretkey);
+           if(token)
+           {
+            req.status(200).json({
+                msg : "successfully logged in",
+                token : token
+            });
+           }
+           else
+           {
+            req.status(500).json({
+                msg : "oops! something went wrong"
+            });
+           }
+        }
+        else
+        {
+            req.status(409).json({
+                msg : "wrong username or password"
+            });
+        }
+    }
+    else{
+    req.status(500).json({
+        msg : "oops! something went wrong"
+    });}
+})
+   
+})
 
 app.use(async(err,req,res,next)=>{
     const result  = await  errormodel.updateOne({
