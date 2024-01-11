@@ -22,3 +22,9 @@ catch(e)
     });
 }
 }
+
+
+
+module.exports={
+    middleware
+}
