@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-const user = require("routes/auth.js")
-const task = require
+const user = require("/home/yagya/Documents/javascript/myBackendproject/Backend-project/routes/auth.js")
+const task = require("/home/yagya/Documents/javascript/myBackendproject/Backend-project/routes/tasks.js")
 app.use(express.json());
 //listening to any user req routes
 app.use("/user",user);
