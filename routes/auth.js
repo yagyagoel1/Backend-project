@@ -1,12 +1,13 @@
 const express = require("express");
-const app = express();
+const router = express.Router();
 const bcrypt = require("bcrypt")
 const {usermodel,errormodel} = require("../db/database.js");
 const { jwtsecretkey } = require("../config.js");
+const { router } = require("./tasks.js");
 
 
 
-app.post("/userRegistration",async(req,res,next)=>{
+router.post("/userRegistration",async(req,res,next)=>{
     const {username,password,email} = req.body;
     const result  =  await usermodel.findOne({
         username : username
@@ -45,7 +46,7 @@ app.post("/userRegistration",async(req,res,next)=>{
     }
 
 })
-app.post("/userlogin",async(req,res,next)=>{
+router.post("/userlogin",async(req,res,next)=>{
 bycrypt.hash(req.body.password,10,async(err,hashedpass)=>{
     if(!err)
     {
@@ -85,7 +86,7 @@ bycrypt.hash(req.body.password,10,async(err,hashedpass)=>{
    
 })
 
-app.use(async(err,req,res,next)=>{
+router.use(async(err,req,res,next)=>{
     const result  = await  errormodel.updateOne({
         errorlog : err
     },
@@ -107,6 +108,10 @@ app.use(async(err,req,res,next)=>{
     });
 })
 
-app.listen(3000,()=>{
+router.listen(3000,()=>{
     console.log("listening on port 3000")
 });
+
+module.exports={
+    router
+}
