@@ -1,6 +1,6 @@
 const {jwtsecretkey} = require("../config")
 const jwt =require("jsonwebtoken")
-function middleware(req,res,next)
+function authenticateMiddleware(req,res,next)
 {
 try{
   const ver =   jwt.verify(req.headers.authorization,jwtsecretkey);
@@ -25,6 +25,6 @@ catch(e)
 
 
 
-module.exports={
-    middleware
-}
+module.exports = {
+  authenticateMiddleware
+};

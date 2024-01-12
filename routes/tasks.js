@@ -1,13 +1,12 @@
-const express = require("express");
-const {Router} = express();
-const router = Router();
+const express  = require("express");
+
+const router = express.Router();
 const bcrypt = require("bcrypt")
 const {taskmodel,errormodel, usermodel} = require("../db/database.js");
 const { jwtsecretkey } = require("../config.js");
-const authorization = require("../middlewares/authenticate.js")
+const { authenticateMiddleware } = require("../middlewares/authenticate.js");
 
-router.use(authorization);
-router.post("/create",async(req,res,next)=>{
+router.post("/create",authenticateMiddleware,async(req,res,next)=>{
     const users = req.body.users;
     //here i have assumed users is the array of users 
     //that are associated with the tasks
@@ -29,7 +28,7 @@ router.post("/create",async(req,res,next)=>{
     })
 })
 
-router.post("/update/:taskid",async(req,res,next)=>{
+router.post("/update/:taskid",authenticateMiddleware,async(req,res,next)=>{
     try{
         await req.params.taskid;
         const update = taskmodel.findByIdAndUpdate(
@@ -64,7 +63,7 @@ router.post("/update/:taskid",async(req,res,next)=>{
         });
     }
 });
-router.get("/fetch",async(req,res,next)=>{
+router.get("/fetch",authenticateMiddleware,async(req,res,next)=>{
     
     try{
         const task = await taskmodel.findOne({title :req.body.title});
@@ -84,7 +83,7 @@ router.get("/fetch",async(req,res,next)=>{
         console.log("error");
     }
 });
-router.post("/delete",async(req,res,next)=>{
+router.post("/delete",authenticateMiddleware,async(req,res,next)=>{
     const title = req.body.title;
     taskmodel.deleteOne({
         title : title
@@ -105,28 +104,8 @@ router.post("/delete",async(req,res,next)=>{
 
 
 //error handling 
-app.use(async(err,req,res,next)=>{
-    const result  = await  errormodel.updateOne({
-        errorlog : err
-    },
-    {
-        $inc : {
-            count : 1
-        }
-    });
-    if(!result)
-    {
-        await errormodel.create({
-            username : jwt.decode(req.headers.authorization).username,
-            errorlog : err,
-            count : 1
-        })
-    }
-    res.status(500).json({
-        msg : "something went wrong"
-    });
-})
 
-app.listen(3000,()=>{
-    console.log("listening on port 3000")
-});
+
+
+
+module.exports = router;
