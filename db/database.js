@@ -27,9 +27,10 @@ const taskSchema =  new mongoose.Schema({
 const usermodel = mongoose.model("User",Userschema);
 
 const errormodel = mongoose.model("Error",errorSchema);
-
+const taskmodel = mongoose.model("Task",taskSchema);
 
 module.exports = {
     usermodel,
-    errormodel
+    errormodel,
+    taskmodel
 }
